@@ -2,22 +2,8 @@ import bge
 import math
 import mathutils
 
-# -@- decorators -@- #
-
-def once_per_tick(func):
-	def wrapper(self, *args, **kwargs):
-		attr = f'{self.__class__.__name__}__method_tick_{func.__name__}__'
-		if not hasattr(self, attr):
-			setattr(self, attr, -1)
-		
-		t = bge.logic.getFrameTime()
-		if t != getattr(self, attr):
-			setattr(self, attr, t)
-			return func(self, *args, **kwargs)
-
-	return wrapper
-
-# -C- classes -C- #
+from .decorators import once_per_tick
+from .utils import KEY_LIST
 
 class PyMouse:
 	def __init__(self):
@@ -27,6 +13,8 @@ class PyMouse:
 		self.__first_frame    = True
 		self.__center         = False
 		self.__was_centered   = False
+
+		self.__init_keys__()
 	
 	def __getattr__(self, attr):
 		return getattr(self.__device, attr)
@@ -39,6 +27,11 @@ class PyMouse:
 
 		super().__setattr__(attr, value)
 	
+	def __init_keys__(self):
+		for key in KEY_LIST["mouse"]:
+			k_input = self.__device.inputs[getattr(bge.events, key)]
+			setattr(self, key, k_input)
+
 	@once_per_tick
 	def __get_delta_position__(self):
 		mouse_pos = mathutils.Vector(self.__device.position)
@@ -85,7 +78,3 @@ class PyMouse:
 		self.__old_position.y = (height * 0.5) / height
 
 		self.__device.position = (0.5, 0.5)
-	
-# -I- instances -I- #
-
-mouse = PyMouse()
