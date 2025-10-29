@@ -1,36 +1,49 @@
-# UPBGE - Mouse Helper
+# UPBGE - PyHelper
 
-A python module that helps with mouse in UPBGE.
+A Python module with small functionalities to help with game development on UPBGE.
 
-## About
+## Resources
 
-This module basically "adds" two new features to the UPBGE mouse, which are: the "deltaPosition" attribute and the "reCenter" method.
+- [x] Delta Time (Time elapsed between frames, used to maintain stability on different hardware & FPS)
+- [x] Decorators (They help modify functions to achieve specific behaviors)
+- [x] PyKeyboard (A class that "extends" the SCA_PythonKeyboard class from UPBGE)
+- [x] PyMouse (A class that "extends" the SCA_PythonMouse class from UPBGE)
+- [ ] Utils (generic stuff that help with something)
 
-The "deltaPosition" attribute, as the name suggests, refers to the delta position of the mouse, that is, how much the mouse moved between the previous frame and the current frame. This is very useful, for example, to create camera movements, the famous mouse look, which is essential for any FPS game.
+## How to use?
 
-The "reCenter" method refers to centering the mouse cursor in the window, which is also essential for FPS games, to prevent the cursor from leaving the window and ending up creating a frustrating experience for the user.
+Here are some example codes:
 
-In this version you receive a vector of size 2 (vec2) in return from deltaPosition, which is something more interesting than just a tuple that you must access using square brackets.
-
-## Code Example
-
-you should be able to use Mouse Helper as follows:
+### Delta Time
 
 ```python
-from PyMouse import mouse
+# bge.logic.deltaTime is set when importing the module
+import pyhelper
 
-# get the mouse delta position
-delta = mouse.deltaPosition
+# Method:
+# bge.logic.deltaTime( scaled = True )
+# parameter "scaled" = is the delta time scaled by timescale?
+# by default = True
 
-# set the mouse cursor to the center of the window
-mouse.reCenter()
+delta_scaled = bge.logic.deltaTime()
+delta_raw = bge.logic.deltaTime(False)
+
+print(delta_scaled, delta_raw)
 ```
 
-Through the "mouse" instance of PyMouse you can still access the attributes and methods of the SCA_PythonMouse class normally, as you would with "bge.logic.mouse", example:
+### PyMouse
 
 ```python
-from PyMouse import mouse
+from pyhelper import mouse
 
-# set the cursor to invisible
-mouse.visible = False
+print(mouse.deltaPosition) # mathutils.Vector(x,y)
+```
+
+### PyKeyboard
+
+```python
+from pyhelper import keyboard
+
+if keyboard.WKEY.active:
+    print("W key is active!")
 ```
